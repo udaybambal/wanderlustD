@@ -24,8 +24,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t your-dockerhub-username/wanderlust-web-app:v1 .
-        docker push your-dockerhub-username/wanderlust-web-app:v1
+        docker build -t dataspider/wanderlust-web-app:v1 .
+        docker push dataspider/wanderlust-web-app:v1
 
     - name: Set up Kubernetes
       uses: azure/setup-kubectl@v1
