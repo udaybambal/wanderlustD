@@ -1,0 +1,40 @@
+name: Deploy Wanderlust Web App
+
+on:
+  push:
+    branches:
+      - devops
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t your-dockerhub-username/wanderlust-web-app:v1 .
+        docker push your-dockerhub-username/wanderlust-web-app:v1
+
+    - name: Set up Kubernetes
+      uses: azure/setup-kubectl@v1
+      with:
+        version: v1.19.3
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
+      env:
+        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
